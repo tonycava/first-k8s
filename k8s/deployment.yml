@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-conn
+  namespace: default
+data:
+  PORT: "3000"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-k8s
+spec:
+  selector:
+    matchLabels:
+      app: express-k8s
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: express-k8s
+    spec:
+      containers:
+        - name: express-k8s-secret
+          image: tonycava/express-k8s
+          envFrom:
+            - configMapRef:
+                name: database-conn
